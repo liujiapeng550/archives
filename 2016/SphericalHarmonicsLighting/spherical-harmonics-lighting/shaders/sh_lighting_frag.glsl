@@ -1,6 +1,6 @@
 #version 330
 
-const int SH_NUM = 9;
+const int SH_NUM = 10;
 
 const float PI = 3.1415926535897932384626433832795;
 
@@ -39,8 +39,16 @@ void main(void) {
 	basis[14] = 1.f / 4.f*sqrt(105.f / PI)*(x2 - y2)*z;
 	basis[15] = 1.f / 4.f*sqrt(35.f / (2 * PI))*(x2 - 3 * y2)*x;
 
+
+
 	vec3 c = vec3(0,0,0);
 	for (int i = 0; i < SH_NUM; i++)
 		c += coef[i] * basis[i];
+
+	// c=(coef[0]*x + coef[1]*y + coef[2]*z + coef[3])*x
+	// 	+ (coef[4]*y + coef[5]*z + coef[6])*y
+	// 	+ (coef[7]*z + coef[8])*z
+	// 	+ coef[9];
+	
 	color = vec4(c, 1);
 }
