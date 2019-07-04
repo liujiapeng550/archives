@@ -75,7 +75,7 @@ void SHLightingApp::OnUpdate(float dt)
 	glEnable(GL_DEPTH_TEST);
 
 	view = input_proc_->GetCameraView();
-	proj = glm::perspective(glm::radians(60.f), FrameRatio(), 0.1f, 100.f);
+	proj = glm::perspective(glm::radians(60.f), FrameRatio(), 0.1f, 600.f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -87,12 +87,9 @@ void SHLightingApp::OnUpdate(float dt)
 	glm::mat4 normal_trans = glm::transpose(glm::inverse(model_trans));
 
 	// delivery transforms
-	glUniformMatrix4fv(glGetUniformLocation(model_program_, "model_view_proj"),
-		1, false, glm::value_ptr(model_view_proj));
-	glUniformMatrix4fv(glGetUniformLocation(model_program_, "normal_trans"),
-		1, false, glm::value_ptr(normal_trans));
-	glUniform3fv(glGetUniformLocation(model_program_, "coef"),
-		16, (float*)(coefs));
+	glUniformMatrix4fv(glGetUniformLocation(model_program_, "model_view_proj"),1, false, glm::value_ptr(model_view_proj));
+	glUniformMatrix4fv(glGetUniformLocation(model_program_, "normal_trans"),1, false, glm::value_ptr(normal_trans));
+	glUniform3fv(glGetUniformLocation(model_program_, "coef"),16, (float*)(coefs));
 	model_->Draw(model_program_);
 
 }
@@ -119,15 +116,22 @@ int main(int argc, char *argv[])
 		cube_textures[4] = "..//data//posz.jpg";
 		cube_textures[5] = "..//data//negz.jpg";*/
 
-		cube_textures[0] = "..//data//right.jpg";
-		cube_textures[1] = "..//data//left.jpg";
-		cube_textures[2] = "..//data//top.jpg";
-		cube_textures[3] = "..//data//bottom.jpg";
-		cube_textures[4] = "..//data//front.jpg";
-		cube_textures[5] = "..//data//back.jpg";
+		//cube_textures[0] = "..//data//right.jpg";
+		//cube_textures[1] = "..//data//left.jpg";
+		//cube_textures[2] = "..//data//top.jpg";
+		//cube_textures[3] = "..//data//bottom.jpg";
+		//cube_textures[4] = "..//data//front.jpg";
+		//cube_textures[5] = "..//data//back.jpg";
 
-		string sh_coef_file ="..//data//sh_coefficient.txt";
-		string objfile = "..//data//PokemonBall.obj";
+		cube_textures[0] = "..//data//Soft_1light_cuberight.tif";
+		cube_textures[1] = "..//data//Soft_1light_cubeleft.tif";
+		cube_textures[2] = "..//data//Soft_1light_cubetop.tif";
+		cube_textures[3] = "..//data//Soft_1light_cubebottom.tif";
+		cube_textures[4] = "..//data//Soft_1light_cubefront.tif";
+		cube_textures[5] = "..//data//Soft_1light_cubeback.tif";
+
+		string sh_coef_file ="..//data//studio_cube.txt";
+		string objfile = "..//data//Cube_obj.obj";
 
 		SHLightingApp app(cube_textures, sh_coef_file, objfile);
 		app.SetWindowSize(800, 600);
