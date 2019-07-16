@@ -1,0 +1,139 @@
+<?xml version='1.0' encoding='utf-8'?>
+<!-- Pano2VR project file  -->
+<pano2vrconfig>
+  <panorama>
+    <input>
+      <patch/>
+      <type>auto</type>
+      <filename>back.jpg</filename>
+    </input>
+    <viewingparameter>
+      <pan/>
+      <tilt/>
+      <fov/>
+    </viewingparameter>
+    <userdata/>
+    <hotspots/>
+    <output>
+      <flash>
+        <html>
+          <enabled>1</enabled>
+          <filename>output/$n.html</filename>
+          <template>normal.ggt</template>
+          <values>
+            <value id="bgcolor">#ffffff</value>
+            <value id="externalinterface">false</value>
+            <value id="parseanchor">false</value>
+            <value id="showuserdata">true</value>
+            <value id="tablebgcolor">#dddddd</value>
+            <value id="tablebordercolor">#777777</value>
+            <value id="tabletextcolor">#000000</value>
+            <value id="textcolor">#000000</value>
+            <value id="videofile"></value>
+          </values>
+        </html>
+        <facequality/>
+        <autorotate>
+          <enabled>0</enabled>
+          <speed>0.4</speed>
+          <delay>5</delay>
+          <returntohorizon>0</returntohorizon>
+          <afterloaded>0</afterloaded>
+          <onlyinfocus>0</onlyinfocus>
+          <nodedelay>0</nodedelay>
+          <noderandom>1</noderandom>
+        </autorotate>
+        <loading>
+          <text/>
+          <bar/>
+          <image/>
+        </loading>
+        <hotspottext>
+          <enabled>1</enabled>
+          <width>180</width>
+          <height>20</height>
+          <auto>0</auto>
+          <textcolor>#000000</textcolor>
+          <textwrap>1</textwrap>
+          <background>1</background>
+          <backgroundcolor>#ffffff</backgroundcolor>
+          <border>1</border>
+          <bordercolor>#000000</bordercolor>
+          <borderradius>1</borderradius>
+        </hotspottext>
+        <hotspotstyle>
+          <viewmode>hidden</viewmode>
+          <backgroundcolor>#0000ff,64</backgroundcolor>
+          <bordercolor>#0000ff</bordercolor>
+        </hotspotstyle>
+        <cursor>
+          <ownonmovement>1</ownonmovement>
+          <ownondefault>1</ownondefault>
+        </cursor>
+        <lock>
+          <domainenabled>0</domainenabled>
+          <domainmessage>wrong domain</domainmessage>
+          <dateenabled>0</dateenabled>
+          <date>2019-07-08</date>
+          <datemessage>expired</datemessage>
+        </lock>
+        <transition>
+          <enabled>0</enabled>
+          <transitiontype>crossdissolve</transitiontype>
+          <transitioncolor>#000000</transitioncolor>
+          <transitiontime>1</transitiontime>
+          <zoominenabled>1</zoominenabled>
+          <zoomoutenabled>1</zoomoutenabled>
+          <zoomoutwait>1</zoomoutwait>
+          <zoomfov>5</zoomfov>
+          <zoomspeed>2</zoomspeed>
+        </transition>
+        <filename>output/$n_out.swf</filename>
+        <quality>90</quality>
+        <subtiles>1</subtiles>
+        <externalimage>0</externalimage>
+        <cubefilename>images/$n_o.jpg</cubefilename>
+        <cubefacenaming>_5</cubefacenaming>
+        <windowwidth>640</windowwidth>
+        <windowheight>480</windowheight>
+        <scaling>stage</scaling>
+        <fovmode>vertical</fovmode>
+        <framerate>60</framerate>
+        <changestagequality>0</changestagequality>
+        <changesmoothing>0</changesmoothing>
+        <sensitivity>8</sensitivity>
+        <masssimulation>1</masssimulation>
+        <locked>0</locked>
+        <invertcontrol>0</invertcontrol>
+        <lockedwheel>0</lockedwheel>
+        <invertwheel>0</invertwheel>
+        <speedwheel>1</speedwheel>
+        <trapwheel>1</trapwheel>
+        <keyboardlocked>0</keyboardlocked>
+        <keyboardzoomlocked>0</keyboardzoomlocked>
+        <networkaccess>0</networkaccess>
+        <fullscreencontext>0</fullscreencontext>
+        <hideaboutbox>0</hideaboutbox>
+        <externalskin>0</externalskin>
+        <skinimagepath>images</skinimagepath>
+        <leveltileenabled>0</leveltileenabled>
+        <leveltilesize>512</leveltilesize>
+        <leveltilefilename>tiles/$n/c%c_l%r_%y_%x.jpg</leveltilefilename>
+        <leveltilegeneratefiles>1</leveltilegeneratefiles>
+        <leveltileoverlap>1</leveltileoverlap>
+        <levelmemraw>300</levelmemraw>
+        <levelmembmp>200</levelmembmp>
+        <levelswitchbias>0.4</levelswitchbias>
+        <levelqueueraw>20</levelqueueraw>
+        <levelqueuebmp>5</levelqueuebmp>
+        <tilesize>2048</tilesize>
+        <previewresolution>4</previewresolution>
+        <preview>grayscale</preview>
+        <previeworder>defaultview</previeworder>
+        <previewcolor>#808080</previewcolor>
+        <previewquality>25</previewquality>
+      </flash>
+    </output>
+    <sounds/>
+  </panorama>
+</pano2vrconfig>

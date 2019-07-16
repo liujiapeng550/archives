@@ -28,15 +28,8 @@ public:
 	void Read(T& proc);
 };
 
-class WritePLY{
-	std::shared_ptr<std::ofstream> plyfs;
-public:
-	WritePLY(std::string filename, int size);
-	void operator()(XYZRGB pixel);
-};
 
 void convert_cube_uv_to_xyz(int index, float u, float v, float *x, float *y, float *z);
-void convert_xyz_to_cube_uv(float x, float y, float z, int *index, float *u, float *v);
 
 template<typename T>
 void Cubemap::Read(T& proc)
@@ -67,6 +60,10 @@ void Cubemap::Read(T& proc)
 				float v = float(j) / h;
 				XYZ p;
 				convert_cube_uv_to_xyz(k, u, v, &p.x, &p.y, &p.z);
+				float radius = sqrt(p.x*p.x + p.y*p.y + p.z*p.z);
+				p.x = p.x / radius;
+				p.y = p.y / radius;
+				p.z = p.z / radius;
 				proc({ p, color });
 			}
 		}

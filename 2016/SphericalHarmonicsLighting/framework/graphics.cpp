@@ -23,6 +23,10 @@ GLuint fw::CreateProgram(string vertexfilename, string fragmentfilename)
 GLuint fw::CreateProgram(vector<tuple<string, GLenum>> shadernames)
 {
 	// create program
+	//OpenGL通过一个名为shaderProgram的对象来与shader交互。
+	//也可以说shaders通过这个对象连接到我们的OpenGL应用程序中，它具体地指涉shader过程。
+	//宏观概念上类似于我们平时写的“程序”，不过它是基于GPU的；
+	//创建这么一个shaderProgram对象（glCreateProgram——成功时返回非0的无符号Handle值，指涉Shader程序对象）；
 	GLuint program = glCreateProgram();
 	vector<GLuint> shaders;
 	// setup shader deletion
@@ -65,11 +69,15 @@ GLuint fw::CreateProgram(vector<tuple<string, GLenum>> shadernames)
 		while (std::getline(sfile, line))
 			content += line + '\n';
 
-		// create shader
+		// create shader 创建Shader对象（glCreateShader——成功时返回非0的无符号Handle值，指涉Shader对象）；
 		GLuint shader = glCreateShader(type);
 		shaders.push_back(shader);
 		const GLchar* str = content.c_str();
+		//把shader代码传入shader对象（glShaderSource——注意此函数的参数，字符流地址参量是GLchar*，
+		//不支持宽字符。执行后可删除内存上保存的shader代码字符串副本）；
 		glShaderSource(shader, 1, &str, NULL);
+		//编译Shader对象——正如我们编译任何代码一样（glCompileShader——应该以GL_COMPILE_STATUS为参调用glGetShaderiv检查编译是否成功。
+		//如果代码出现问题会在这个阶段报错，debug时可用glGetError查看更具体的错误类型）；
 		glCompileShader(shader);
 
 		// check compile result
@@ -81,9 +89,12 @@ GLuint fw::CreateProgram(vector<tuple<string, GLenum>> shadernames)
 				+ sname + ":\n" + info);
 		}
 		// attach to program
+		//把之前创建的shaders，一个一个地Attach到这个shaderProgram对象上（glAttachShader——当然理论上可以attach多于一个的同类型完整的shader，
+		//譬如vertexShader。但是在一个特定的渲染流程中只允许其中一个起作用，你明白的）；
 		glAttachShader(program, shader);
 	}
 	// link
+	//链接shaderProgram——正如我们链接任何程序一样（glLinkProgram——应该以GL_LINK_STATUS为参调用glGetProgramiv检查链接是否成功。）
 	glLinkProgram(program);
 	// clean up
 	delete_shaders(shaders);
@@ -179,7 +190,12 @@ void Mesh::SetupMesh()
 	// texture coordination
 	glEnableVertexAttribArray(2);
 	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, texcoords_));
-
+	// tangent
+	glEnableVertexAttribArray(3);
+	glVertexAttribPointer(3, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, tangent_));
+	// Binormal
+	glEnableVertexAttribArray(4);
+	glVertexAttribPointer(4, 3, GL_FLOAT, GL_FALSE, sizeof(Vertex), (GLvoid*)offsetof(Vertex, binormal_));
 	// detach
 	glBindVertexArray(0);
 }
@@ -193,7 +209,7 @@ void Model::Draw(GLuint program)
 void Model::LoadModel(string path)
 {
 	Assimp::Importer importer;
-	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs);
+	const aiScene* scene = importer.ReadFile(path, aiProcess_Triangulate | aiProcess_FlipUVs | aiProcess_CalcTangentSpace);
 	if (!scene || scene->mFlags == AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode){
 		throw runtime_error(string("Loading model error:") + importer.GetErrorString());
 	}
@@ -241,6 +257,15 @@ Mesh Model::ProcMesh(aiMesh* mesh, const aiScene* scene)
 		else{
 			v.texcoords_ = glm::vec2(0.0f, 0.0f);
 		}
+		if(!mesh->mTangents)
+			throw runtime_error("model missing tangent");
+		const auto& mt = mesh->mTangents[i];
+		v.tangent_ = glm::vec3(mt.x,mt.y,mt.z);
+
+		if (!mesh->mBitangents)
+			throw runtime_error("model missing bitangents");
+		const auto& mb = mesh->mBitangents[i];
+		v.binormal_ = glm::vec3(mb.x, mb.y, mb.z);
 
 		vertices.push_back(v);
 	}

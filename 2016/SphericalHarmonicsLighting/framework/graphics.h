@@ -27,6 +27,8 @@ namespace fw{
 		vec3 position_;
 		vec3 normal_;
 		vec2 texcoords_;
+		vec3 tangent_;
+		vec3 binormal_;
 	};
 
 	struct Texture{
