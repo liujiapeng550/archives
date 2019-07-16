@@ -114,7 +114,7 @@ void SHLightingApp::OnUpdate(float dt)
 	glEnable(GL_DEPTH_TEST);
 	glEnable(GL_MULTISAMPLE);
 	view = input_proc_->GetCameraView();
-	proj = glm::perspective(glm::radians(60.f), FrameRatio(), 0.1f, 500.f);
+	proj = glm::perspective(glm::radians(60.f), FrameRatio(), 0.1f, 600.f);
 
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glClearColor(0.5f, 0.5f, 0.5f, 1.0f);
@@ -140,7 +140,7 @@ void SHLightingApp::OnUpdate(float dt)
 	glUniform3fv(glGetUniformLocation(model_program_, "coef"),
 		16, (float*)(coefs));
 
-	//ÌùÍ¼
+	//???
 	// load textures
 	// -------------
 	unsigned int base = loadTexture(FileSystem::getPath("C:/Users/Administrator/Pictures/bricks/base.png").c_str());
@@ -196,12 +196,12 @@ int main(int argc, char *argv[])
 		cube_textures[4] = "..//data//posz.jpg";
 		cube_textures[5] = "..//data//negz.jpg";*/
 
-		/*cube_textures[0] = "..//data//right.jpg";
-		cube_textures[1] = "..//data//left.jpg";
-		cube_textures[2] = "..//data//top.jpg";
-		cube_textures[3] = "..//data//bottom.jpg";
-		cube_textures[4] = "..//data//front.jpg";
-		cube_textures[5] = "..//data//back.jpg";*/
+		//cube_textures[0] = "..//data//right.jpg";
+		//cube_textures[1] = "..//data//left.jpg";
+		//cube_textures[2] = "..//data//top.jpg";
+		//cube_textures[3] = "..//data//bottom.jpg";
+		//cube_textures[4] = "..//data//front.jpg";
+		//cube_textures[5] = "..//data//back.jpg";
 
 		cube_textures[0] = "..//data//Soft_1light_cuberight.tif";
 		cube_textures[1] = "..//data//Soft_1light_cubeleft.tif";
