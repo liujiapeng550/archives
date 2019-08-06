@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 		cube_textures[4] = "..//data//Soft_1light_cubefront.tif";
 		cube_textures[5] = "..//data//Soft_1light_cubeback.tif";
 
-		string sh_coef_file ="..//data//Soft.txt";
+		string sh_coef_file ="..//data//sh_coefficient.txt";
 		string objfile = "..//data//Cube_obj.obj";
 
 		SHLightingApp app(cube_textures, sh_coef_file, objfile);
