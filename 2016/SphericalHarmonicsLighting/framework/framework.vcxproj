@@ -96,10 +96,13 @@
     <ClInclude Include="geometry.h" />
     <ClInclude Include="graphics.h" />
     <ClInclude Include="inputs.h" />
+    <ClInclude Include="ResourceCommon.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="framework.cpp" />
     <ClCompile Include="geometry.cpp" />
+    <ClCompile Include="GPUProgram.cpp" />
+    <ClCompile Include="GPUProgram.h" />
     <ClCompile Include="graphics.cpp" />
     <ClCompile Include="inputs.cpp" />
   </ItemGroup>

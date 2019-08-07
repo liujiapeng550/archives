@@ -1,35 +1,10 @@
-/*
-Copyright (c) 2018, Allegorithmic. All rights reserved.
-
-Redistribution and use in source and binary forms, with or without
-modification, are permitted provided that the following conditions are met:
-   * Redistributions of source code must retain the above copyright
-     notice, this list of conditions and the following disclaimer.
-   * Redistributions in binary form must reproduce the above copyright
-     notice, this list of conditions and the following disclaimer in the
-     documentation and/or other materials provided with the distribution.
-   * Neither the name of the Allegorithmic nor the
-     names of its contributors may be used to endorse or promote products
-     derived from this software without specific prior written permission.
-
-THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
-ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
-WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
-DISCLAIMED. IN NO EVENT SHALL ALLEGORITHMIC BE LIABLE FOR ANY
-DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
-LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
-ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
-(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-*/
 
 //////////////////////////////// Fragment shader
 #version 330
 
-#include "../common/common.glsl"
-#include "../common/uvtile.glsl"
-#include "../common/parallax.glsl"
+#include "../spherical-harmonics-lighting/shaders/common/common.glsl"
+#include "../spherical-harmonics-lighting/shaders/common/uvtile.glsl"
+#include "../spherical-harmonics-lighting/shaders/common/parallax.glsl"
 
 in vec3 iFS_Normal;
 in vec2 iFS_UV;
@@ -83,12 +58,12 @@ uniform int nbSamples = 16;
 // Irradiance spherical harmonics polynomial coefficients
 // This is a color 2nd degree polynomial in (x,y,z), so it needs 10 coefficients
 // for each color channel
-uniform vec3 shCoefs[10];
+uniform vec3 shCoefs[16];
 
 
 // This must be included after the declaration of the uniform arrays since they
 // can't be passed as functions parameters for performance reasons (on macs)
-#include "../common/pbr_ibl.glsl"
+#include "../spherical-harmonics-lighting/shaders/common/pbr_ibl.glsl"
 
 
 float fit_roughness(float r)

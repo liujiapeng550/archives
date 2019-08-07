@@ -33,6 +33,9 @@
     <ClInclude Include="inputs.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ResourceCommon.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="framework.cpp">
@@ -45,6 +48,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="inputs.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPUProgram.h">
+      <Filter>Header Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GPUProgram.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

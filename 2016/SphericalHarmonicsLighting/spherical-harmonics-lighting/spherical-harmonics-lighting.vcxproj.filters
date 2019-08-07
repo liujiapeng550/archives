@@ -21,6 +21,9 @@
     <ClCompile Include="..\SDK\image\stb_image.c">
       <Filter>Resource Files\Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="Application.cpp">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
@@ -28,6 +31,15 @@
   <ItemGroup>
     <ClInclude Include="..\SDK\image\stb_image.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Application.h">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="harmonics.h">
+      <Filter>Resource Files\Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="cubemap.h">
+      <Filter>Resource Files\Source Files</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

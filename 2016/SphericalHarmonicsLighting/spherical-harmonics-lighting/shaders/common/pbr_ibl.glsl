@@ -32,8 +32,8 @@ float normal_distrib(
 	float ndh,
 	float Roughness)
 {
-// use GGX / Trowbridge-Reitz, same as Disney and Unreal 4
-// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
+	// use GGX / Trowbridge-Reitz, same as Disney and Unreal 4
+	// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
 	float alpha = Roughness * Roughness;
 	float tmp = alpha / max(1e-8,(ndh*ndh*(alpha*alpha-1.0)+1.0));
 	return tmp * tmp * M_INV_PI;
@@ -43,8 +43,8 @@ vec3 fresnel(
 	float vdh,
 	vec3 F0)
 {
-// Schlick with Spherical Gaussian approximation
-// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
+	// Schlick with Spherical Gaussian approximation
+	// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
 	float sphg = pow(2.0, (-5.55473*vdh - 6.98316) * vdh);
 	return F0 + (vec3(1.0, 1.0, 1.0) - F0) * sphg;
 }
@@ -53,8 +53,8 @@ float G1(
 	float ndw, // w is either Ln or Vn
 	float k)
 {
-// One generic factor of the geometry function divided by ndw
-// NB : We should have k > 0
+	// One generic factor of the geometry function divided by ndw
+	// NB : We should have k > 0
 	return 1.0 / ( ndw*(1.0-k) + k );
 }
 
@@ -63,9 +63,9 @@ float visibility(
 	float ndv,
 	float Roughness)
 {
-// Schlick with Smith-like choice of k
-// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
-// visibility is a Cook-Torrance geometry function divided by (n.l)*(n.v)
+	// Schlick with Smith-like choice of k
+	// cf http://blog.selfshadow.com/publications/s2013-shading-course/karis/s2013_pbs_epic_notes_v2.pdf p3
+	// visibility is a Cook-Torrance geometry function divided by (n.l)*(n.v)
 	float k = Roughness * Roughness * 0.5;
 	return G1(ndl,k)*G1(ndv,k);
 }
@@ -83,7 +83,7 @@ vec3 microfacets_brdf(
 	float ndl = max( 0.0, dot(Nn, Ln) );
 	float ndv = max( 0.0, dot(Nn, Vn) );
 	return fresnel(vdh,Ks) *
-		( normal_distrib(ndh,Roughness) * visibility(ndl,ndv,Roughness) / 4.0 );
+	( normal_distrib(ndh,Roughness) * visibility(ndl,ndv,Roughness) / 4.0 );
 }
 
 vec3 microfacets_contrib(
@@ -94,8 +94,8 @@ vec3 microfacets_contrib(
 	vec3 Ks,
 	float Roughness)
 {
-// This is the contribution when using importance sampling with the GGX based
-// sample distribution. This means ct_contrib = ct_brdf / ggx_probability
+	// This is the contribution when using importance sampling with the GGX based
+	// sample distribution. This means ct_contrib = ct_brdf / ggx_probability
 	return fresnel(vdh,Ks) * (visibility(ndl,ndv,Roughness) * vdh * ndl / ndh );
 }
 
@@ -111,17 +111,68 @@ vec3 diffuse_brdf(
 void computeOrtho(vec3 A, out vec3 B, out vec3 C)
 {
 	B = (abs(A.z) < 0.999) ? vec3(-A.y, A.x, 0.0 )*inversesqrt(1.0-A.z*A.z) :
-		vec3(0.0, -A.z, A.y)*inversesqrt(1.0-A.x*A.x) ;
+	vec3(0.0, -A.z, A.y)*inversesqrt(1.0-A.x*A.x) ;
 	C = cross( A, B );
 }
 
 vec3 irradianceFromSH(vec3 n)
 {
-	return (shCoefs[0]*n.x + shCoefs[1]*n.y + shCoefs[2]*n.z + shCoefs[3])*n.x
-		+ (shCoefs[4]*n.y + shCoefs[5]*n.z + shCoefs[6])*n.y
-		+ (shCoefs[7]*n.z + shCoefs[8])*n.z
-		+ shCoefs[9];
+	// return (shCoefs[0]*n.x + shCoefs[1]*n.y + shCoefs[2]*n.z + shCoefs[3])*n.x
+	// 	+ (shCoefs[4]*n.y + shCoefs[5]*n.z + shCoefs[6])*n.y
+	// 	+ (shCoefs[7]*n.z + shCoefs[8])*n.z
+	// 	+ shCoefs[9];
+	
+	
+	float x = n.x;
+	float y = n.y;
+	float z = n.z;
+	float x2 = x*x;
+	float y2 = y*y;
+	float z2 = z*z;
+	
+	float basis[16];
+	//vec3 shCoefs[16];
+	basis[0] = 1.f / 2.f * sqrt(1.f / M_PI);
+	basis[1] = sqrt(3.f / (4.f*M_PI))*y;
+	basis[2] = sqrt(3.f / (4.f*M_PI))*z;
+	basis[3] = sqrt(3.f / (4.f*M_PI))*x;
+	basis[4] = 1.f / 2.f * sqrt(15.f / M_PI) * x * y;
+	basis[5] = 1.f / 2.f * sqrt(15.f / M_PI) * y * z;
+	basis[6] = 1.f / 4.f * sqrt(5.f / M_PI) * (-x*x - y*y + 2 * z*z);
+	basis[7] = 1.f / 2.f * sqrt(15.f / M_PI) * z * x;
+	basis[8] = 1.f / 4.f * sqrt(15.f / M_PI) * (x*x - y*y);
+	basis[9] = 1.f / 4.f*sqrt(35.f / (2.f*M_PI))*(3 * x2 - y2)*y;
+	basis[10] = 1.f / 2.f*sqrt(105.f / M_PI)*x*y*z;
+	basis[11] = 1.f / 4.f*sqrt(21.f / (2.f*M_PI))*y*(4 * z2 - x2 - y2);
+	basis[12] = 1.f / 4.f*sqrt(7.f / M_PI)*z*(2 * z2 - 3 * x2 - 3 * y2);
+	basis[13] = 1.f / 4.f*sqrt(21.f / (2.f*M_PI))*x*(4 * z2 - x2 - y2);
+	basis[14] = 1.f / 4.f*sqrt(105.f / M_PI)*(x2 - y2)*z;
+	basis[15] = 1.f / 4.f*sqrt(35.f / (2 * M_PI))*(x2 - 3 * y2)*x;
+	
+	// shCoefs[0]  =vec3(0.899157,	0.899157,	0.899157);
+	// shCoefs[1]  =vec3(-0.530788,	-0.530788,	-0.530788);
+	// shCoefs[2]  =vec3(-1.01587,	-1.01587,	-1.01587);
+	// shCoefs[3]  =vec3(7.9671e-005,	7.9671e-005,	7.9671e-005);
+	// shCoefs[4]  =vec3(-0.000459027,	-0.000459027,	-0.000459027);
+	// shCoefs[5]  =vec3(0.521771,	0.521771,	0.521771);
+	// shCoefs[6]  =vec3(0.461652,	0.461652,	0.461652);
+	// shCoefs[7]  =vec3(-0.000657842,	-0.000657842,	-0.000657842);
+	// shCoefs[8]  =vec3(-0.117315,	-0.117315,	-0.117315);
+	// shCoefs[9]  =vec3(-0.0033616,	-0.0033616,	-0.0033616);
+	// shCoefs[10] =vec3(0.000643692,	0.000643692,	0.000643692);
+	// shCoefs[11] =vec3(-0.0943141,	-0.0943141,	-0.0943141);
+	// shCoefs[12] =vec3(0.0100754,	0.0100754,	0.0100754);
+	// shCoefs[13] =vec3(0.0016176,	0.0016176,	0.0016176);
+	// shCoefs[14] =vec3(0.0269678,	0.0269678,	0.0269678);
+	// shCoefs[15] =vec3(-0.00164493,	-0.00164493,	-0.00164493);
+	
+	
+	vec3 c = vec3(0,0,0);
+	for (int i = 0; i < 10; i++)
+	c += shCoefs[i] * basis[i];
+	return c;
 }
+
 
 vec3 importanceSampleGGX(vec2 Xi, vec3 A, vec3 B, vec3 C, float roughness)
 {
@@ -199,141 +250,140 @@ vec3 pointLightContribution(
 	// Note that the lamp intensity is using ˝computer games units" i.e. it needs
 	// to be multiplied by M_PI.
 	// Cf https://seblagarde.wordpress.com/2012/01/08/pi-or-not-to-pi-in-game-lighting-equation/
-
+	
 	return  max(dot(fixedNormalWS,pointToLightDirWS), 0.0) * ( (
-		diffuse_brdf(
-			fixedNormalWS,
-			pointToLightDirWS,
-			pointToCameraDirWS,
-			diffColor*(vec3(1.0,1.0,1.0)-specColor))
-		+ microfacets_brdf(
-			fixedNormalWS,
-			pointToLightDirWS,
-			pointToCameraDirWS,
-			specColor,
-			roughness) ) *LampColor*(lampAttenuation(LampDist)*LampIntensity*M_PI) );
-}
-
-void computeSamplingFrame(
-	in vec3 iFS_Tangent,
-	in vec3 iFS_Binormal,
-	in vec3 fixedNormalWS,
-	out vec3 Tp,
-	out vec3 Bp)
-{
-	Tp = normalize(iFS_Tangent
-		- fixedNormalWS*dot(iFS_Tangent, fixedNormalWS));
-	Bp = normalize(iFS_Binormal
-		- fixedNormalWS*dot(iFS_Binormal,fixedNormalWS)
-		- Tp*dot(iFS_Binormal, Tp));
-}
-
-vec2 fibonacci2D(int i, int nbSample)
-{
-	return vec2(
-		float(i+1) * M_GOLDEN_RATIO,
-		(float(i)+0.5) / float(nbSamples)
-	);
-}
-
-// Horizon fading trick from http://marmosetco.tumblr.com/post/81245981087
-float horizonFading(float ndl) {
-	const float horizonFade = 1.3;
-	float horiz = clamp( 1.0 + horizonFade * ndl, 0.0, 1.0 );
-	return horiz * horiz;
-}
-
-#define ExpandIBLSpecularContribution(envSamplerType, envLodComputationFunc, envSampleFunc) \
-	vec3 IBLSpecularContribution( \
-		envSamplerType environmentMap, \
-		float envRotation, \
-		float maxLod, \
-		int nbSamples, \
-		vec3 normalWS, \
-		vec3 fixedNormalWS, \
-		vec3 Tp, \
-		vec3 Bp, \
-		vec3 pointToCameraDirWS, \
-		vec3 specColor, \
-		float roughness) \
-	{ \
-		vec3 sum = vec3(0.0); \
-		float ndv = dot(pointToCameraDirWS, fixedNormalWS); \
-		\
-		/* Removes black artifacts at silouhettes */ \
-		if (ndv < 0.0) \
-		{ \
-			pointToCameraDirWS = reflect(pointToCameraDirWS, fixedNormalWS); \
-			ndv = -ndv; \
-		} \
-		\
-		for(int i=0; i<nbSamples; ++i) \
-		{ \
-			vec2 Xi = fibonacci2D(i, nbSamples); \
-			vec3 Hn = importanceSampleGGX(Xi,Tp,Bp,fixedNormalWS,roughness); \
-			vec3 Ln = -reflect(pointToCameraDirWS,Hn); \
-			\
-			float horiz = horizonFading( dot(normalWS, Ln) ); \
-			float ndl = max( 1e-8, dot(fixedNormalWS, Ln) ); \
-			float vdh = max( 1e-8, dot(pointToCameraDirWS, Hn) ); \
-			float ndh = max( 1e-8, dot(fixedNormalWS, Hn) ); \
-			float lodS = roughness < 0.01 ? 0.0 : \
-				envLodComputationFunc( \
-					Ln, \
-					probabilityGGX(ndh, vdh, roughness), \
-					nbSamples, \
-					maxLod); \
-			sum += \
-				envSampleFunc(environmentMap,rotate(Ln,envRotation),lodS) * \
-				microfacets_contrib( \
-					vdh, ndh, ndl, ndv, \
-					specColor, \
-					roughness) * horiz; \
-		} \
-		\
-		return sum / nbSamples; \
-	}
-
-ExpandIBLSpecularContribution(sampler2D  , computeLOD       , samplePanoramicLOD)
-ExpandIBLSpecularContribution(samplerCube, computeCubemapLOD, sampleCubemapLOD  )
-
-#define ExpandComputeIBL(envSamplerType) \
-	vec3 computeIBL( \
-		envSamplerType environmentMap, \
-		float envRotation, \
-		float maxLod, \
-		int nbSamples, \
-		vec3 normalWS, \
-		vec3 fixedNormalWS, \
-		vec3 iFS_Tangent, \
-		vec3 iFS_Binormal, \
-		vec3 pointToCameraDirWS, \
-		vec3 diffColor, \
-		vec3 specColor, \
-		float roughness, \
-		float ambientOcclusion) \
-	{ \
-		vec3 Tp,Bp; \
-		computeSamplingFrame(iFS_Tangent, iFS_Binormal, fixedNormalWS, Tp, Bp); \
-		\
-		vec3 result = IBLSpecularContribution( \
-			environmentMap, \
-			envRotation, \
-			maxLod, \
-			nbSamples, \
-			normalWS, \
-			fixedNormalWS, \
-			Tp, \
-			Bp, \
-			pointToCameraDirWS, \
-			specColor, \
-			roughness); \
-		\
-		result += diffColor * (vec3(1.0) - specColor) * \
-			irradianceFromSH(rotate(fixedNormalWS,envRotation)); \
-		\
-		return result * ambientOcclusion; \
-	}
-
-ExpandComputeIBL(sampler2D  )
-ExpandComputeIBL(samplerCube)
+			diffuse_brdf(
+				fixedNormalWS,
+				pointToLightDirWS,
+				pointToCameraDirWS,
+				diffColor*(vec3(1.0,1.0,1.0)-specColor))
+				+ microfacets_brdf(
+					fixedNormalWS,
+					pointToLightDirWS,
+					pointToCameraDirWS,
+					specColor,
+				roughness) ) *LampColor*(lampAttenuation(LampDist)*LampIntensity*M_PI) );
+			}
+			
+			void computeSamplingFrame(
+				in vec3 iFS_Tangent,
+				in vec3 iFS_Binormal,
+				in vec3 fixedNormalWS,
+				out vec3 Tp,
+			out vec3 Bp)
+			{
+				Tp = normalize(iFS_Tangent
+					- fixedNormalWS*dot(iFS_Tangent, fixedNormalWS));
+					Bp = normalize(iFS_Binormal
+						- fixedNormalWS*dot(iFS_Binormal,fixedNormalWS)
+						- Tp*dot(iFS_Binormal, Tp));
+					}
+					
+					vec2 fibonacci2D(int i, int nbSample)
+					{
+						return vec2(
+							float(i+1) * M_GOLDEN_RATIO,
+							(float(i)+0.5) / float(nbSamples)
+						);
+					}
+					
+					// Horizon fading trick from http://marmosetco.tumblr.com/post/81245981087
+					float horizonFading(float ndl) {
+						const float horizonFade = 1.3;
+						float horiz = clamp( 1.0 + horizonFade * ndl, 0.0, 1.0 );
+						return horiz * horiz;
+					}
+					
+					#define ExpandIBLSpecularContribution(envSamplerType, envLodComputationFunc, envSampleFunc) \
+					vec3 IBLSpecularContribution( \
+						envSamplerType environmentMap, \
+						float envRotation, \
+						float maxLod, \
+						int nbSamples, \
+						vec3 normalWS, \
+						vec3 fixedNormalWS, \
+						vec3 Tp, \
+						vec3 Bp, \
+						vec3 pointToCameraDirWS, \
+						vec3 specColor, \
+					float roughness) \
+					{ \
+						vec3 sum = vec3(0.0); \
+						float ndv = dot(pointToCameraDirWS, fixedNormalWS); \
+						\
+						/* Removes black artifacts at silouhettes */\
+						if(ndv<0.)\
+						{\
+							pointToCameraDirWS=reflect(pointToCameraDirWS,fixedNormalWS);\
+							ndv=-ndv;\
+						}\
+						\
+						for(int i=0;i<nbSamples;++i)\
+						{\
+							vec2 Xi=fibonacci2D(i,nbSamples);\
+							vec3 Hn=importanceSampleGGX(Xi,Tp,Bp,fixedNormalWS,roughness);\
+							vec3 Ln=-reflect(pointToCameraDirWS,Hn);\
+							\
+							float horiz=horizonFading(dot(normalWS,Ln));\
+							float ndl=max(1e-8,dot(fixedNormalWS,Ln));\
+							float vdh=max(1e-8,dot(pointToCameraDirWS,Hn));\
+							float ndh=max(1e-8,dot(fixedNormalWS,Hn));\
+							float lodS=roughness<.01?0.:\
+							envLodComputationFunc(\
+								Ln,\
+								probabilityGGX(ndh,vdh,roughness),\
+								nbSamples,\
+							maxLod);\
+							sum+=\
+							envSampleFunc(environmentMap,rotate(Ln,envRotation),lodS)*\
+							microfacets_contrib(\
+								vdh,ndh,ndl,ndv,\
+								specColor,\
+							roughness)*horiz;\
+						}\
+						\
+						return sum/nbSamples;\
+					}
+					
+					ExpandIBLSpecularContribution(sampler2D,computeLOD,samplePanoramicLOD)
+					ExpandIBLSpecularContribution(samplerCube,computeCubemapLOD,sampleCubemapLOD)
+					
+					#define ExpandComputeIBL(envSamplerType)\
+					vec3 computeIBL(\
+						envSamplerType environmentMap,\
+						float envRotation,\
+						float maxLod,\
+						int nbSamples,\
+						vec3 normalWS,\
+						vec3 fixedNormalWS,\
+						vec3 iFS_Tangent,\
+						vec3 iFS_Binormal,\
+						vec3 pointToCameraDirWS,\
+						vec3 diffColor,\
+						vec3 specColor,\
+						float roughness,\
+					float ambientOcclusion)\
+					{\
+						vec3 Tp,Bp;\
+						computeSamplingFrame(iFS_Tangent,iFS_Binormal,fixedNormalWS,Tp,Bp);\
+						\
+						vec3 result=IBLSpecularContribution(\
+							environmentMap,\
+							envRotation,\
+							maxLod,\
+							nbSamples,\
+							normalWS,\
+							fixedNormalWS,\
+							Tp,\
+							Bp,\
+							pointToCameraDirWS,\
+							specColor,\
+						roughness);\
+						\
+						result += diffColor * (vec3(1.0) - specColor) *  irradianceFromSH(rotate(fixedNormalWS,envRotation));\
+						\
+						return result*ambientOcclusion;\
+					}
+					
+					ExpandComputeIBL(sampler2D)
+					ExpandComputeIBL(samplerCube)
